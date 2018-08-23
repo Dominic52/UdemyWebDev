@@ -15,7 +15,12 @@ $("ul").on("click", "span", function(event){
 $("input[type='text']").keypress(function(event){
     if(event.which === 13){
         var todoText = $(this).val();
-        $("ul").append("<li><span>X </span>" + todoText + "</li>")
+        $("ul").append("<li><span><i class='fas fa-trash-alt'></i> </span>" + todoText + "</li>")
         $(this).val("");
     }
+})
+
+//Toggles input field availability
+$(".fa-plus").click(function(){
+    $("input[type='text']").fadeToggle(300);
 })
