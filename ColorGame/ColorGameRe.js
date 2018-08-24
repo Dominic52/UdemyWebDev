@@ -18,12 +18,13 @@ var goalnum;
 var numSquares = 6;
 var inGame = false;
 
-init();
+//Scores logged in console
+var correctCount = 0;
+var guessCount = 0;
 
-//Initializes game
-function init() {
-  buttonListeners();
-}
+
+//Basically the init function
+buttonListeners();
 
 //Initializes button listeners
 function buttonListeners() {
@@ -36,12 +37,12 @@ function buttonListeners() {
         this.classList.add("selected");
         if (this.textContent === "Easy") {
           numSquares = 3;
-          console.log("3");
+          console.log("Easy Mode");
           modes[1].removeAttribute("disabled");
           modes[0].setAttribute("disabled", true);
         } else {
           numSquares = 6;
-          console.log("6");
+          console.log("Hard Mode");
           modes[0].removeAttribute("disabled");
           modes[1].setAttribute("disabled", true);
         }
@@ -52,6 +53,7 @@ function buttonListeners() {
 
   newGame.style.cursor = "pointer";
   newGame.addEventListener("click", function() {
+    console.log("Game Start!");
     runGame();
   });
 }
@@ -78,12 +80,19 @@ function runGame() {
     squares[i].addEventListener("click", function() {
       //If clicked square is goal case
       if (this.style.backgroundColor === goal) {
+        if (inGame){  
+          correctCount++;
+          console.log(correctCount + " answered correctly of " + guessCount + " total guesses!")
+        }
         stat.textContent = "Correct!";
         changeToGoalColors(goal);
         header.style.backgroundColor = goal;
         newGame.textContent = "Play Again?";
         inGame = false;
       } else {
+      if (inGame){ 
+        guessCount++;
+      }
         stat.textContent = "Try Again!";
         this.style.backgroundColor = "#232323";
       }
