@@ -16,6 +16,7 @@ var colors = [
 var goal;
 var goalnum;
 var numSquares = 6;
+var inGame = false;
 
 init();
 
@@ -27,52 +28,61 @@ function init() {
 //Initializes button listeners
 function buttonListeners() {
   for (var i = 0; i < modes.length; i++) {
+    modes[i].style.cursor = "pointer";
     modes[i].addEventListener("click", function() {
-      modes[0].classList.remove("selected");
-      modes[1].classList.remove("selected");
-      this.classList.add("selected");
-      if (this.textContent === "Easy") {
-        numSquares = 3;
-        console.log("3");
-        modes[1].removeAttribute("disabled");
-        modes[0].setAttribute("disabled", true);
-      } else {
-        numSquares = 6;
-        console.log("6");
-        modes[0].removeAttribute("disabled");
-        modes[1].setAttribute("disabled", true);
+      if (!inGame) {
+        modes[0].classList.remove("selected");
+        modes[1].classList.remove("selected");
+        this.classList.add("selected");
+        if (this.textContent === "Easy") {
+          numSquares = 3;
+          console.log("3");
+          modes[1].removeAttribute("disabled");
+          modes[0].setAttribute("disabled", true);
+        } else {
+          numSquares = 6;
+          console.log("6");
+          modes[0].removeAttribute("disabled");
+          modes[1].setAttribute("disabled", true);
+        }
+        changeSquares(numSquares);
       }
-      changeSquares(numSquares);
     });
   }
 
+  newGame.style.cursor = "pointer";
   newGame.addEventListener("click", function() {
-    console.log("Game Starts!");
+    runGame();
   });
 }
 
 //Prepares squares with event listeners, colors, and a goal color
-function squarePrep() {
+function runGame() {
+  inGame = true;
+  //Randomly picks the correct color from generated colors
+  goalnum = randomGoal(numSquares);
+
+  //For each square
   for (var i = 0; i < squares.length; i++) {
+    //Generate a random color
     var newRandomColor = randomColor();
-
+    //Sets individual square to random color
     squares[i].style.backgroundColor = newRandomColor;
+    //Sets squares to have "pointer" style cursor
     squares[i].style.cursor = "pointer";
-
-    //Randomly picks the correct color from generated colors
-    goalnum = randomGoal(numSquares);
-
+    //Sets randomized goal square
     if (i === goalnum) {
       goal = newRandomColor;
     }
-
     //Adds on click functions to each square
     squares[i].addEventListener("click", function() {
+      //If clicked square is goal case
       if (this.style.backgroundColor === goal) {
         stat.textContent = "Correct!";
-        changeColors(goal);
+        changeToGoalColors(goal);
         header.style.backgroundColor = goal;
         newGame.textContent = "Play Again?";
+        inGame = false;
       } else {
         stat.textContent = "Try Again!";
         this.style.backgroundColor = "#232323";
@@ -102,6 +112,14 @@ function changeSquares(n) {
       squares[i].setAttribute("style", "display:none");
     } else {
       squares[i].setAttribute("style", "display:inline-block");
+      squares[i].style.backgroundColor = goal;
     }
   }
+}
+
+//Changes all squares to correct goal color
+function changeToGoalColors(color) {
+  squares.forEach((square) => {
+    square.style.backgroundColor = goal;
+  })
 }
