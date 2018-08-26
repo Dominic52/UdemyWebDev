@@ -2,7 +2,7 @@
   "name": "package",
   "version": "1.0.0",
   "description": "exercises",
-  "main": "shop.js",
+  "main": "exp.js",
   "author": "Dominic52",
   "license": "MIT",
   "private": true,
