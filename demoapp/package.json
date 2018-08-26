@@ -1,0 +1,13 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "description": "exercises",
+  "main": "shop.js",
+  "author": "Dominic52",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.16.3",
+    "faker": "^4.1.0"
+  }
+}
