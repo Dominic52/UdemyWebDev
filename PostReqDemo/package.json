@@ -1,0 +1,13 @@
+{
+  "name": "PostReqDemo",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "Dominic52",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3"
+  }
+}
