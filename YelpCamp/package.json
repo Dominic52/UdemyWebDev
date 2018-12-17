@@ -1,0 +1,11 @@
+{
+  "name": "YelpCamp",
+  "version": "1.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3"
+  }
+}
