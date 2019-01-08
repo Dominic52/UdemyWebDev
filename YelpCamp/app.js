@@ -75,7 +75,8 @@ app.post("/campgrounds", function(req, res) {
     //Post routing for new campgrounds
     var name = req.body.name;
     var image = req.body.image;
-    var newCampground = {name: name, image: image};
+    var desc = req.body.desc;
+    var newCampground = {name: name, image: image, description: desc};
     //Creates new campground and saves to database
     Campground.create(newCampground, function(err, newlyCreated){
         if (err){
@@ -93,7 +94,7 @@ app.get("/campgrounds/:id", function(req, res){
         if (err){
             console.log(err);
         } else {
-            res.render("show", foundCampground);
+            res.render("show", {campground: foundCampground});
         }
     });
 });

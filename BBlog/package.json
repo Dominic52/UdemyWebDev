@@ -1,0 +1,14 @@
+{
+  "name": "BBlog",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "Dong Yuan Yang",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.0"
+  }
+}

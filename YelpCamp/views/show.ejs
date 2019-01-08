@@ -1,5 +1,10 @@
-<h1>THIS IS A SHOWPAGE</h1>
+<% include partials/header %>
 
-<img src="<%= foundCampground.image %>" alt="campsite image">
 
-<p><%= foundCampground.description %></p>
+<h2><%= campground.name %></h2>
+<img src="<%= campground.image %>" alt="campsite image">
+
+<p><%= campground.description %></p>
+
+
+<% include partials/footer %>
