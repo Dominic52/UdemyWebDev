@@ -28,8 +28,9 @@ var blog = mongoose.model("Blog", blogSchema);
 
 // })
 
+// INDEX Route
 app.get("/", function(req, res){
-    res.redirect("/blog");
+    res.redirect("/blogs");
 });
 
 app.get("/blogs", function(req, res){
@@ -39,10 +40,38 @@ app.get("/blogs", function(req, res){
         } else{
             res.render("index", {blogs: blogs});
         }
-    })
+    });
 });
 
+// NEW Route
+app.get("/blogs/new", function(req, res){
+    res.render("new");
+});
 
+// CREATE Route
+app.post("/blogs", function(req, res){
+    blog.create(req.body.blog, function(err, newBlog){
+        if (err){
+            console.log("Error creating blog post");
+            res.render("new");
+        } else {
+            res.redirect("/blogs");
+        }
+    });
+});
+
+// SHOW Route
+app.get("/blogs/:id", function(req, res){
+    blog.findById(req.params.id, function(err, foundBlog){
+        if (err){
+            res.redirect("/");
+        } else {
+            res.render("show", {blog: foundBlog});
+        }
+    });
+});
+
+// Listens to node server
 app.listen(3000, function(){
     console.log("BBlog server has started");
 });
