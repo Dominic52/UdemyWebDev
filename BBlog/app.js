@@ -99,7 +99,13 @@ app.put("/blogs/:id", function(req, res){
 
 // DELETE Route
 app.delete("/blogs/:id", function(req, res){
-    res.send("Del route");
+    blog.findByIdAndRemove(req.params.id, function(err){
+        if (err){
+            res.redirect("/blogs");
+        } else {
+            res.redirect("/blogs");
+        }
+    });
 });
 
 // Listens to node server
