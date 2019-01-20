@@ -1,14 +1,17 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var bodyparser = require("body-parser");
+var methodOverride = require("method-override");
 
 var app = express();
 
 mongoose.connect("mongodb://localhost:27017/blog_app", {useNewUrlParser: true});
+mongoose.set("useFindAndModify", false);
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyparser.urlencoded({extended: true}));
+app.use(methodOverride("_method"));
 
 // MongoDB config
 
@@ -69,6 +72,34 @@ app.get("/blogs/:id", function(req, res){
             res.render("show", {blog: foundBlog});
         }
     });
+});
+
+// EDIT Route
+app.get("/blogs/:id/edit", function(req, res){
+    blog.findById(req.params.id, function(err, foundBlog){
+        if (err){
+            console.log("there was an error reaching post to be edited");
+            res.redirect("/");
+        } else {
+            res.render("edit", {blog: foundBlog});
+        }
+    });
+});
+
+// UPDATE Route
+app.put("/blogs/:id", function(req, res){
+    blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
+        if (err){
+            res.redirect("/");
+        } else {
+            res.redirect("/blogs/" + req.params.id);
+        }
+    });
+});
+
+// DELETE Route
+app.delete("/blogs/:id", function(req, res){
+    res.send("Del route");
 });
 
 // Listens to node server
