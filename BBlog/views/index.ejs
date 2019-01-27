@@ -1,6 +1,6 @@
 <% include partials/header %>
 <div class="ui main container text">
-    <div class="ui huge header">Basic Blog</div>
+    <div class="ui huge header">Welcome to BBlog</div>
     <div class="ui top attached segment">
         <div class="ui divided items">
             <% blogs.forEach(function(blog){ %>
@@ -15,14 +15,16 @@
                         </div>
                         <div class="description">
                             <p>
-                                <% if (blog.body.length < 100) { %>
+                                <% if (blog.body.length <= 90) { %>
                                     <%- blog.body; %>
                                 <% } else { %>
-                                    <%- blog.body.substring(0, 100) %>...
+                                    <%- blog.body.substring(0, 90) %>...
                                 <% } %>
                             </p>
                         </div>
-                        <a href="/blogs/<%=blog._id%>" class="ui floated basic violet button">Read More<i class="right chevron icon"></i></a>
+                        <div class="extra">
+                                <a href="/blogs/<%=blog._id%>" class="ui right floated primary button">Read More<i class="right chevron icon" style="font-size: 15px"></i></a>
+                        </div>
                     </div>
                 </div>
             <% }); %>

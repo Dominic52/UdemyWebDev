@@ -39,7 +39,7 @@ app.get("/", function(req, res){
 });
 
 app.get("/blogs", function(req, res){
-    blog.find({}, function(err, blogs){
+    blog.find({}, null, {sort: '-created'}, function(err, blogs){
         if (err){
             console.log("ERROR");
         } else{
