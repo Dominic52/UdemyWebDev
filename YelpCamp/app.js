@@ -1,6 +1,10 @@
 var express = require("express");
 var bodyparser = require("body-parser");
 var mongoose = require("mongoose");
+var Campground = require("./models/campground");
+// var Comment = require("./models/comment");
+// var User = require("./models/user");
+var seedDB = require("./seeds");
 
 var app = express();
 
@@ -14,16 +18,6 @@ app.set("view engine", "ejs");
 //Sets bodyparser to return URLencoded format
 app.use(bodyparser.urlencoded({extended: true}));
 
-
-//Database Schema
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
-
 // Test creates new campground object to be saved to database
 
 // Campground.create(
@@ -36,6 +30,8 @@ var Campground = mongoose.model("Campground", campgroundSchema);
 //     }
 // );
 
+
+seedDB();
 
 ////////// ROUTING STARTS HERE ////////////
 
