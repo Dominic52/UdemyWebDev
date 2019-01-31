@@ -8,8 +8,12 @@ var seedDB = require("./seeds");
 
 var app = express();
 
-//MongoDB connection
-mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
+// MongoDB connection
+// Local host 
+// mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
+
+// 
+mongoose.connect("mongodb://dyan263:Cruiser-904@mdb1-shard-00-00-cwxrh.mongodb.net:27017,mdb1-shard-00-01-cwxrh.mongodb.net:27017,mdb1-shard-00-02-cwxrh.mongodb.net:27017/test?ssl=true&replicaSet=MDB1-shard-0&authSource=admin&retryWrites=true", {useNewUrlParser:true});
 mongoose.set("useFindAndModify", false);
 
 //Sets view engine to ejs. Allows references to ejs files to omit .ejs suffix
@@ -17,6 +21,9 @@ app.set("view engine", "ejs");
 
 //Sets bodyparser to return URLencoded format
 app.use(bodyparser.urlencoded({extended: true}));
+
+//Links to CSS Stylesheets
+app.use(express.static(__dirname + "/public"));
 
 // Removes all campgrounds and creates new seed campground and comment data
 seedDB();
@@ -26,7 +33,6 @@ seedDB();
 //=====================================================================
 
 // LANDING PAGE
-
 app.get("/", function (req, res) {
     //Get routing for landing page
     res.render("landing");
@@ -34,7 +40,6 @@ app.get("/", function (req, res) {
 
 
 // INDEX - GET webpage to display all campgrounds
-
 app.get("/campgrounds", function (req, res) {
     //Get routing for campgrounds page
     //Gets all campgrounds from database
@@ -49,14 +54,12 @@ app.get("/campgrounds", function (req, res) {
 });
 
 // NEW - GET form page to submit new campground
-
 app.get("/campgrounds/new", function(req, res){
     //New campground form page
     res.render("campgrounds/new");
 });
 
 // CREATE - POST sends new campsite information to database
-
 app.post("/campgrounds", function(req, res) {
     //Post routing for new campgrounds
     var name = req.body.name;
@@ -74,7 +77,6 @@ app.post("/campgrounds", function(req, res) {
 });
 
 // SHOW - GET shows individual information about selected campground
-
 app.get("/campgrounds/:id", function(req, res){
     Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
         if (err){
@@ -89,6 +91,7 @@ app.get("/campgrounds/:id", function(req, res){
 //                     COMMENT ROUTING STARTS HERE
 //=====================================================================
 
+// NEW comment form
 app.get("/campgrounds/:id/comments/new", function(req, res){
     Campground.findById(req.params.id, function(err, foundCampground){
         if (err) {
@@ -99,6 +102,7 @@ app.get("/campgrounds/:id/comments/new", function(req, res){
     });
 });
 
+// CREATE new comment
 app.post("/campgrounds/:id/comments", function(req, res){
     Campground.findById(req.params.id, function(err, foundCampground){
         if (err){
@@ -116,6 +120,8 @@ app.post("/campgrounds/:id/comments", function(req, res){
         }
     })
 });
+
+
 
 // Node server
 app.listen(3000, function () {
