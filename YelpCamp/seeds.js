@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var Campground = require("./models/campground");
-var Comment = require("./models/comment");
+var Comments = require("./models/comment");
 
 
 var data = [
@@ -20,38 +20,46 @@ var data = [
 
 
 function seedDB(){
-    // Removes all campgrounds
-    Campground.remove({}, function(err){
+    Comments.remove({}, function(err){
         if (err){
             console.log(err);
         } else {
-            console.log("removed all campgrounds!");
-            // Creates new default campgrounds
-            data.forEach(function(seed){
-                Campground.create(seed, function(err, campground){
-                    if(err){
-                        console.log(err);
-                    } else {
-                        console.log("added default data");
-                        Comment.create(
-                            {
-                                text: "This is a very nice place to go to",
-                                author: "Gary Oaks"
-                            }, function(err, comment){
-                                if (err){
-                                    console.log(err);
-                                } else {
-                                    campground.comments.push(comment);
-                                    campground.save();
-                                    console.log("added new default comment");
-                                }
-                            });
-                    }
-                });
+            console.log("removed all old comments");
+            // Removes all campgrounds
+            Campground.remove({}, function(err){
+                if (err){
+                    console.log(err);
+                } else {
+                    console.log("removed all campgrounds!");
+                    // Creates new default campgrounds
+                    data.forEach(function(seed){
+                        Campground.create(seed, function(err, campground){
+                            if(err){
+                                console.log(err);
+                            } else {
+                                console.log("added default data");
+                                Comments.create(
+                                    {
+                                        text: "This is a very nice place to go to",
+                                        author: "Gary Oaks"
+                                    }, function(err, comment){
+                                        if (err){
+                                            console.log(err);
+                                        } else {
+                                            campground.comments.push(comment);
+                                            campground.save();
+                                            console.log("added new default comment");
+                                        }
+                                    });
+                            }
+                        });
+                    });
+                }
             });
+
         }
     });
-
+    
     
 
 }

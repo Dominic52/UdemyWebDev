@@ -10,21 +10,33 @@ var seedDB = require("./seeds");
 
 var app = express();
 
-// MongoDB connection
-// Local host 
-// mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
+// Local MongoDB connection
+mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
 
-// 
-mongoose.connect("mongodb://dyan263:Cruiser-904@mdb1-shard-00-00-cwxrh.mongodb.net:27017,mdb1-shard-00-01-cwxrh.mongodb.net:27017,mdb1-shard-00-02-cwxrh.mongodb.net:27017/test?ssl=true&replicaSet=MDB1-shard-0&authSource=admin&retryWrites=true", {useNewUrlParser:true});
+// Online MongoDB connection
+// mongoose.connect("mongodb://dyan263:Cruiser-904@mdb1-shard-00-00-cwxrh.mongodb.net:27017,mdb1-shard-00-01-cwxrh.mongodb.net:27017,mdb1-shard-00-02-cwxrh.mongodb.net:27017/test?ssl=true&replicaSet=MDB1-shard-0&authSource=admin&retryWrites=true", {useNewUrlParser:true});
 mongoose.set("useFindAndModify", false);
 
-//Sets view engine to ejs. Allows references to ejs files to omit .ejs suffix
+
+// PASSPORT CONFIG
+app.use(require("express-session")({
+    secret: "sesame seed biscuits",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// Sets view engine to ejs. Allows references to ejs files to omit .ejs suffix
 app.set("view engine", "ejs");
 
-//Sets bodyparser to return URLencoded format
+// Sets bodyparser to return URLencoded format
 app.use(bodyparser.urlencoded({extended: true}));
 
-//Links to CSS Stylesheets
+// Links to CSS Stylesheets
 app.use(express.static(__dirname + "/public"));
 
 // Removes all campgrounds and creates new seed campground and comment data
@@ -123,7 +135,43 @@ app.post("/campgrounds/:id/comments", function(req, res){
     })
 });
 
+/////////////////////////////////
+//              Auth Routes
+/////////////////////////////////
+app.get("/register", function(req, res){
+    res.render("register");
+});
 
+app.post("/register", function(req, res){
+    var newUser = new User({username: req.body.username});
+    User.register(newUser, req.body.password, function(err, user){
+        if (err){
+            console.log(err);
+            return res.render("register");
+        } else {
+            passport.authenticate("local")(req, res, function(){
+                res.redirect("/campgrounds");
+            });
+        }
+    });
+});
+
+app.get("/login", function(req, res){
+    res.render("login");
+})
+
+app.post("/login", passport.authenticate(
+    {
+        successRedirect: "/campgrounds",
+        failureRedirect: "/login"
+
+    })
+);
+
+app.get("/logout", function(req, res){
+    req.logout();
+    res.redirect("/campgrounds");
+});
 
 // Node server
 app.listen(3000, function () {
