@@ -39,6 +39,12 @@ app.use(bodyparser.urlencoded({extended: true}));
 // Links to CSS Stylesheets
 app.use(express.static(__dirname + "/public"));
 
+// Middleware to add authentication information to all pages
+app.use(function(req, res, next){
+    res.locals.currentUser = req.user;
+    next();
+});
+
 // Removes all campgrounds and creates new seed campground and comment data
 seedDB();
 
@@ -55,7 +61,6 @@ app.get("/", function (req, res) {
 
 // INDEX - GET webpage to display all campgrounds
 app.get("/campgrounds", function (req, res) {
-    //Get routing for campgrounds page
     //Gets all campgrounds from database
     Campground.find({}, function(err, allcampgrounds){
         if (err){
@@ -106,7 +111,7 @@ app.get("/campgrounds/:id", function(req, res){
 //=====================================================================
 
 // NEW comment form
-app.get("/campgrounds/:id/comments/new", function(req, res){
+app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res){
     Campground.findById(req.params.id, function(err, foundCampground){
         if (err) {
             console.log(err);
@@ -117,7 +122,7 @@ app.get("/campgrounds/:id/comments/new", function(req, res){
 });
 
 // CREATE new comment
-app.post("/campgrounds/:id/comments", function(req, res){
+app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
     Campground.findById(req.params.id, function(err, foundCampground){
         if (err){
             console.log(err);
@@ -135,13 +140,16 @@ app.post("/campgrounds/:id/comments", function(req, res){
     })
 });
 
-/////////////////////////////////
+///////////////////////////////////////////////////
 //              Auth Routes
-/////////////////////////////////
+///////////////////////////////////////////////////
+
+// GET request to access registration form
 app.get("/register", function(req, res){
     res.render("register");
 });
 
+// POST request to submit registration
 app.post("/register", function(req, res){
     var newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user){
@@ -156,22 +164,34 @@ app.post("/register", function(req, res){
     });
 });
 
+// GET request to render login form and page
 app.get("/login", function(req, res){
     res.render("login");
 })
 
-app.post("/login", passport.authenticate(
+// POST request of login information 
+app.post("/login", passport.authenticate("local",
     {
         successRedirect: "/campgrounds",
         failureRedirect: "/login"
-
-    })
+    }), function(req, res){
+        // unused callback
+    }
 );
 
+// GET request to logout
 app.get("/logout", function(req, res){
     req.logout();
     res.redirect("/campgrounds");
 });
+
+// Middleware function which returns logged in status
+function isLoggedIn(req, res, next){
+    if (req.isAuthenticated()){
+        return next();
+    }
+    res.redirect("/login");
+}
 
 // Node server
 app.listen(3000, function () {
